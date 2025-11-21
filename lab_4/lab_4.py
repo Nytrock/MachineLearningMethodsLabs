@@ -21,13 +21,33 @@ def get_data(table_name):
     return x, y
 
 
-def predict(x):
+def predict(x, neighbors):
     distances = []
-    for x_t in train_x:
-        distances.append(euclidian_distance(x, x_t))
+    data = []
+
+    for j in range(len(train_x)):
+        distances.append(euclidian_distance(x, train_x[j]))
+        data.append(train_y[j])
     distances = np.array(distances)
+    data = np.array(data)
+
     sort_indexes = distances.argsort()
-    return sort_indexes
+    data = data[sort_indexes]
+    data = data[:neighbors]
+
+    classes = []
+    for d in data:
+        classes.append(d)
+    predicted = max(classes, key=classes.count)
+    return predicted
+
+
+def calculate_accuracy(y_true, y_predicted):
+    count = 0
+    for i in range(len(y_true)):
+        if y_true[i] == y_predicted[i]:
+            count += 1
+    return count / len(y_true)
 
 
 k = int(input('Введите k: '))
@@ -39,6 +59,7 @@ y_name = 'Y- наличие задолженностей'
 train_x, train_y = get_data('TrainData.xlsx')
 test_x, test_y = get_data('TestData.xlsx')
 
+pred_y = []
 for i in range(len(test_x)):
-    y_pred = predict(test_x[i])
-    print(y_pred)
+    pred_y.append(predict(test_x[i], k))
+print("Accuracy:", calculate_accuracy(test_y, pred_y))
