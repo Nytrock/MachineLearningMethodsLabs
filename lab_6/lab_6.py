@@ -30,8 +30,14 @@ def calculate_frequency(a, b):
 
 def predict(frequency, weather, result):
     pBA = frequency[weather][result] / frequency[TOTAL_KEY][result]
+    print(f'P({weather}|{result}) = {pBA}')
+
     pB = frequency[TOTAL_KEY][weather] / frequency[TOTAL_KEY][COUNT_KEY]
+    print(f'P({weather}) = {pB}')
+
     pA = frequency[TOTAL_KEY][result] / frequency[TOTAL_KEY][COUNT_KEY]
+    print(f'P({result}) = {pA}')
+
     return pBA * pA / pB
 
 
@@ -41,9 +47,10 @@ def main():
     a = data[data.columns[1]].tolist()
     frequency = calculate_frequency(a, b)
 
+    print('Виды погоды:', list(set(b)))
     weather = input('Погода: ')
     chance = predict(frequency, weather, 'Yes')
-    print('Шанс проведения матч:', chance)
+    print('Шанс проведения матча:', chance)
 
 
 if __name__ == '__main__':
